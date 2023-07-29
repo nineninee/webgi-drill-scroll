@@ -61,7 +61,7 @@ body {
 }
 
 
-.first button{
+.button--hero{
   background: #F2CE6E;
   color: black;
   border: none;
@@ -110,6 +110,16 @@ body {
   transform: translateY(-50%);
 }
 
+.button--customize{
+  background: #F2CE6E;
+  color: black;
+  border: none;
+  border-radius: 50px;
+  padding: 10px 30px;
+  font-size: 0.6rem;
+  font-weight: bold;
+}
+
 footer{
   width: 100vw;
   height: 100px;
@@ -127,18 +137,39 @@ footer button {
   font-size: 0.6rem;
   font-weight: bold;
 }
-  
+
 
 #webgi-canvas {
   width: 100%;
   height: 100%;
   border-radius: 0.5rem;
-}
-#webgi-canvas-container{
   position: fixed;
   top: 0;
+}
+
+#webgi-canvas-container{
   width: 100vw;
   height: 100vh;
   pointer-events: none;
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  
+  
+}
 
+.button--exit{
+  background: #F2CE6E;
+  color: black;
+  border: none;
+  border-radius: 50px;
+  padding: 10px 30px;
+  font-size: 0.6rem;
+  font-weight: bold;
+  width: 90px;
+  margin-bottom: 5%;
+  z-index: 5;
+  /* display: none; */
 }

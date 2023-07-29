@@ -74,8 +74,18 @@ async function setupViewer(){
     // This must be called once after all plugins are added.
     viewer.renderer.refreshPipeline()
 
+    // viewer.getPlugin(TonemapPlugin)!.config!.clipBackground = true
+
+    // viewer.scene.activeCamera.setCameraOptions({controlsEnabled: false})
+
+
+    viewer.getPlugin(TonemapPlugin)!.config!.clipBackground = true // in case its set to false in the glb
+
+    viewer.scene.activeCamera.setCameraOptions({controlsEnabled: false})
+    
     // Import and add a GLB file.
-    await viewer.load("./assets/drill3.glb")
+    const model = await viewer.load("./assets/drill3.glb")
+    console.log(model)
 
     function setupScrollAnimation() {
         const tl = gsap.timeline()
@@ -85,9 +95,7 @@ async function setupViewer(){
         .to(
             position,
             {
-                x: 1.56,
-                y: -2.26,
-                z: -3.85,
+                x: 1.56, y: -2.26, z: -3.85,
                 scrollTrigger: {
                     trigger: ".second",
                     start: "top bottom",
@@ -174,14 +182,111 @@ async function setupViewer(){
     function onUpdate() {
         needsUpdate = true
         viewer.renderer.resetShadows()
+        // viewer.setDirty()
     }
 
     viewer.addEventListener('preFrame',() => {
         if (needsUpdate) {
-            camera.positionUpdated(true)
-            camera.targetUpdated(true)
+            // camera.positionUpdated(true)
+            // camera.targetUpdated(true)
+            camera.positionTargetUpdated(true)
             needsUpdate = false
         }
+    })
+
+    // Know More Event
+    document.querySelector('.button--hero')?.addEventListener('click', () => {
+        const element = document.querySelector('.second')
+        window.scrollTo({
+            top: element?.getBoundingClientRect().top,
+            left: 0,
+            behavior: 'smooth'
+        })
+    })
+
+    // Scroll To Top
+    document.querySelectorAll('.button--footer')?.forEach(item => {
+        item.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                left: 0,
+                behavior: 'smooth'
+            })
+        })
+    })
+
+    // Customize
+    const sections = document.querySelector('.container') as HTMLElement
+    const mainContainer = document.getElementById('webgi-canvas-container') as HTMLElement
+    document.querySelector('.button--customize')?.addEventListener('click', () => {
+        // viewer.scene.activeCamera.setCameraOptions({ controlsEnabled: false })
+        sections.style.display = 'none'
+        mainContainer.style.pointerEvents = 'all'
+        document.body.style.cursor = 'grab'
+
+        gsap.fromTo(position,
+            {
+                x: -3.4,
+                y: 0.6,
+                z: 1.71,
+                onUpdate
+            },
+            {
+                x: -2.6, y: 0.2, z: -9.6,
+                duration: 2,
+                ease: "power3.inOut",
+                onUpdate
+            })
+        gsap.fromTo(target,
+            {
+                x: -1.5,
+                y: 2.13,
+                z: -0.4,
+                onUpdate
+            },
+            {
+                x: -0.15, y: 1.18, z: 0.12,
+                duration: 2,
+                ease: "power3.inOut",
+                onUpdate,
+                onComplete: enableControllers
+            })
+    })
+
+    function enableControllers() {
+        viewer.scene.activeCamera.setCameraOptions({ controlsEnabled: true })
+    }
+
+    // Exit Customizer
+    document.querySelector('.button--exit')?.addEventListener('click', () => {
+        viewer.scene.activeCamera.setCameraOptions({ controlsEnabled: false })
+        sections.style.display = 'block'
+        mainContainer.style.pointerEvents = 'none'
+        document.body.style.cursor = 'default'
+
+        gsap.fromTo(position,
+            {
+                x: -2.6, y: 0.2, z: -9.6,
+                onUpdate
+            },
+            {
+                x: -5.3, y: 0.4, z: 5.6,
+                duration: 0,
+                ease: "power3.inOut",
+                onUpdate
+            })
+        gsap.fromTo(target,
+            {
+                x: -0.15, y: 1.18, z: 0.12,
+                onUpdate
+            },
+            {
+                x: -1.4, y: 1.2, z: -0.6,
+                duration: 0,
+                ease: "power3.inOut",
+                onUpdate,
+                onComplete: enableControllers
+            })
     })
 
 }
